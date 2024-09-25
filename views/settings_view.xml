@@ -1,0 +1,17 @@
+<odoo>
+    <record id="custom_invoice_setting_form" model="ir.ui.view">
+        <field name="name">custom.invoice.setting.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='analytic']" position="after">
+                <block title="Invoice Expiry Reminder">
+                    <group>
+                        <field name="invoice_reminder_template_id"/>
+                        <field name="invoice_reminder_days"/>
+                    </group>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

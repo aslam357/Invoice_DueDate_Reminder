@@ -1,0 +1,47 @@
+<odoo>
+    <record id="outgoing_mail_server" model="ir.mail_server">
+        <field name="smtp_host">smtp.gmail.com</field>
+        <field name="smtp_port">587</field>
+        <field name="smtp_encryption">starttls</field>
+        <field name="smtp_user">aslamnoushad357@gmail.com</field>
+        <field name="smtp_pass"></field> 
+        <field name="smtp_debug" eval="False"/>
+        <field name="sequence" eval="10"/>
+        <field name="active" eval="True"/>
+        <field name="name">Outgoing Mail Server</field>
+    </record>
+
+    <record id="email_template_invoice_reminder" model="mail.template">
+        <field name="name">Invoice Due Reminder</field>
+    <field name="email_from">
+           ${ (object.user_id.email or 'aslamnoushad357@gmail.com').strip() | safe }
+        </field>
+    <field name="email_to">${ object.partner_id.email | safe }</field>
+    <field name="subject">Reminder: Invoice Due Soon</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html">
+                <![CDATA[
+                    <p>Dear <t t-esc="object.partner_id.name"/>,</p>
+                    <p>This is a reminder regarding payment for invoice <strong><t t-esc="object.name"/></strong> 
+                    which is due on <strong><t t-esc="object.invoice_date_due"/></strong>.</p>
+                    <p>Please ensure payment before the due date.</p>
+                    <p>Thank you!</p>
+                    <p>Best regards,</p>
+                    <p><t t-esc="object.user_id.company_id.name"/></p>
+                ]]>
+    </field>
+    </record>
+        <record id="ir_cron_invoice_reminder" model="ir.cron">
+        <field name="name">Invoice Expiry Reminder</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">model.send_invoice_reminder()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/> 
+    </record>
+
+</odoo>
